@@ -32,7 +32,7 @@ func Say(message string) error {
 	if err != nil {
 		return err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != 200 && resp.StatusCode != 204 {
 		return fmt.Errorf("HTTP error %d", resp.StatusCode)
 	}
 	return nil
