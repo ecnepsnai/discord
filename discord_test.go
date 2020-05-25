@@ -13,6 +13,7 @@ func ExamplePost() {
 		Content: "Hello, world!",
 		Embeds: []discord.Embed{
 			{
+				Color: 16777215,
 				Author: discord.Author{
 					Name: "ecnepsnai",
 					URL:  "github.com/ecnepsnai",
