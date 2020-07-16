@@ -45,4 +45,4 @@ discord.Post(discord.PostOptions{
 })
 ```
 
-For more information see the [package's documentation](https://pkg.go.dev/github.com/ecnepsnai/discord).
+For more information see the [package's documentation](https://pkg.go.dev/github.com/ecnepsnai/discord). This package is not endorsed by or affiliated with Discord, inc.
