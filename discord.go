@@ -30,15 +30,15 @@ type PostOptions struct {
 
 // Embed describes embedded content within a message
 type Embed struct {
-	Author      Author  `json:"author,omitempty"`
+	Author      *Author `json:"author,omitempty"`
 	Title       string  `json:"title,omitempty"`
 	URL         string  `json:"url,omitempty"`
 	Description string  `json:"description,omitempty"`
 	Color       uint32  `json:"color,omitempty"`
 	Fields      []Field `json:"fields,omitempty"`
-	Thumbnail   Image   `json:"thumbnail,omitempty"`
-	Image       Image   `json:"image,omitempty"`
-	Footer      Footer  `json:"footer,omitempty"`
+	Thumbnail   *Image  `json:"thumbnail,omitempty"`
+	Image       *Image  `json:"image,omitempty"`
+	Footer      *Footer `json:"footer,omitempty"`
 }
 
 // Author describes the author for an embed
