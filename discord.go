@@ -8,6 +8,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 )
 
@@ -55,7 +57,9 @@ type Field struct {
 	Inline bool   `json:"inline,omitempty"`
 }
 
-// Image describes an image for an embed
+// Image describes an image for an embed. If you need to upload an image
+// you must use the `discord.UploadFile()` method, however that does not support
+// rich embeds.
 type Image struct {
 	URL string `json:"url,omitempty"`
 }
@@ -79,6 +83,54 @@ func Post(content PostOptions) error {
 	}
 
 	resp, err := http.Post(WebhookURL, "application/JSON", bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != 200 && resp.StatusCode != 204 {
+		return fmt.Errorf("HTTP error %d", resp.StatusCode)
+	}
+	return nil
+}
+
+// FileOptions describes the options for uploading a file
+type FileOptions struct {
+	// The file name must include an extension and not include any directories
+	FileName string
+	Reader   io.Reader
+}
+
+// UploadFile will post a message to the channel for which the webhook is configured
+// and attach the specified file to your message. Rich embeds are not supported and
+// will be ignored if any are specified.
+func UploadFile(content PostOptions, file FileOptions) error {
+	if WebhookURL == "" {
+		return nil
+	}
+
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+	fileWriter, err := w.CreateFormFile("file", file.FileName)
+	if err != nil {
+		return err
+	}
+	if _, err := io.Copy(fileWriter, file.Reader); err != nil {
+		return err
+	}
+	payloadWriter, err := w.CreateFormField("payload_json")
+	if err != nil {
+		return err
+	}
+	if err := json.NewEncoder(payloadWriter).Encode(content); err != nil {
+		return err
+	}
+	w.Close()
+
+	req, err := http.NewRequest("POST", WebhookURL, &b)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", w.FormDataContentType())
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}

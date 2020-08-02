@@ -3,6 +3,7 @@ package discord_test
 import (
 	"fmt"
 	"os"
+	"path"
 	"strings"
 	"testing"
 
@@ -57,5 +58,24 @@ func TestPost(t *testing.T) {
 	})
 	if err != nil {
 		t.Errorf("Error posting complex message: %s", err.Error())
+	}
+}
+
+func TestFileUpload(t *testing.T) {
+	discord.WebhookURL = webhookURL
+	f, err := os.OpenFile(path.Join(".", "discord.go"), os.O_RDONLY, 0644)
+	if err != nil {
+		t.Fatalf("Error opening file: %s", err.Error())
+	}
+	defer f.Close()
+	content := discord.PostOptions{
+		Content: "Hello, world!",
+	}
+	fileOptions := discord.FileOptions{
+		FileName: "discord.go",
+		Reader:   f,
+	}
+	if err := discord.UploadFile(content, fileOptions); err != nil {
+		t.Errorf("Error posting message with file attachment: %s", err.Error())
 	}
 }

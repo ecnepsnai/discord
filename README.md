@@ -1,7 +1,7 @@
 # Discord
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/ecnepsnai/discord?style=flat-square)](https://goreportcard.com/report/github.com/ecnepsnai/discord)
-[![Godoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://pkg.go.dev/github.com/ecnepsnai/discord)
+[![Godoc](https://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://pkg.go.dev/github.com/ecnepsnai/discord)
 [![Releases](https://img.shields.io/github/release/ecnepsnai/discord/all.svg?style=flat-square)](https://github.com/ecnepsnai/discord/releases)
 [![LICENSE](https://img.shields.io/github/license/ecnepsnai/discord.svg?style=flat-square)](https://github.com/ecnepsnai/discord/blob/master/LICENSE)
 
@@ -36,7 +36,7 @@ discord.Post(discord.PostOptions{
 		{
 			Author: discord.Author{
 				Name: "ecnepsnai",
-				URL:  "github.com/ecnepsnai",
+				URL:  "https://github.com/ecnepsnai",
 			},
 			Title:       "Amazing!",
 			Description: "This is a cool embed",
@@ -45,4 +45,24 @@ discord.Post(discord.PostOptions{
 })
 ```
 
-For more information see the [package's documentation](https://pkg.go.dev/github.com/ecnepsnai/discord). This package is not endorsed by or affiliated with Discord, inc.
+## File Attachment
+
+Restrictions with Discords Webhook API only supports 1 file upload at 8MiB or less.
+
+```golang
+var f *io.Reader // Pretend we've opened a file
+content := discord.PostOptions{
+	Content: "Hello, world!",
+}
+fileOptions := discord.FileOptions{
+	FileName: "my_hot_mixtape.mp3",
+	Reader:   f,
+}
+discord.UploadFile(content, fileOptions)
+```
+
+# Documentation
+
+For more information see the [package's documentation](https://pkg.go.dev/github.com/ecnepsnai/discord).
+
+**This package is not endorsed by or affiliated with Discord, inc.**

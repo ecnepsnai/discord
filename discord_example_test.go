@@ -1,6 +1,10 @@
 package discord_test
 
-import "github.com/ecnepsnai/discord"
+import (
+	"io"
+
+	"github.com/ecnepsnai/discord"
+)
 
 func ExampleSay() {
 	discord.WebhookURL = "https://discord.com/api/webhooks/.../..."
@@ -23,4 +27,17 @@ func ExamplePost() {
 			},
 		},
 	})
+}
+
+func ExampleUploadFile() {
+	discord.WebhookURL = "https://discord.com/api/webhooks/.../..."
+	var f *io.Reader // Pretend we've opened a file
+	content := discord.PostOptions{
+		Content: "Hello, world!",
+	}
+	fileOptions := discord.FileOptions{
+		FileName: "my_hot_mixtape.mp3",
+		Reader:   f,
+	}
+	discord.UploadFile(content, fileOptions)
 }
