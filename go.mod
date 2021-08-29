@@ -1,3 +1,3 @@
 module github.com/ecnepsnai/discord
 
-go 1.14
+go 1.17
