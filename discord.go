@@ -64,7 +64,7 @@ type Image struct {
 	URL string `json:"url,omitempty"`
 }
 
-// Footer describes the foorter for an embed
+// Footer describes the footer for an embed
 type Footer struct {
 	Text    string `json:"text,omitempty"`
 	IconURL string `json:"icon_url,omitempty"`
@@ -77,12 +77,12 @@ func Post(content PostOptions) error {
 		return nil
 	}
 
-	data, err := json.Marshal(content)
-	if err != nil {
+	body := &bytes.Buffer{}
+	if err := json.NewEncoder(body).Encode(content); err != nil {
 		return err
 	}
 
-	resp, err := http.Post(WebhookURL, "application/JSON", bytes.NewReader(data))
+	resp, err := http.Post(WebhookURL, "application/JSON", body)
 	if err != nil {
 		return err
 	}

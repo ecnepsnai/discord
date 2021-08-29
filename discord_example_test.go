@@ -31,7 +31,7 @@ func ExamplePost() {
 
 func ExampleUploadFile() {
 	discord.WebhookURL = "https://discord.com/api/webhooks/.../..."
-	var f *io.Reader // Pretend we've opened a file
+	var f io.Reader // Pretend we've opened a file
 	content := discord.PostOptions{
 		Content: "Hello, world!",
 	}
