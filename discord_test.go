@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"strings"
 	"testing"
 
 	"github.com/ecnepsnai/discord"
@@ -13,15 +12,7 @@ import (
 var webhookURL = ""
 
 func TestMain(m *testing.M) {
-	for _, env := range os.Environ() {
-		components := strings.Split(env, "=")
-		key := components[0]
-		value := components[1]
-		if key == "DISCORD_WEBHOOK_URL" {
-			webhookURL = value
-			break
-		}
-	}
+	webhookURL = os.Getenv("DISCORD_WEBHOOK_URL")
 
 	if webhookURL == "" {
 		fmt.Fprintf(os.Stderr, "DISCORD_WEBHOOK_URL environment variable is required\n")

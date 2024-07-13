@@ -1,12 +1,26 @@
+/*
+Command disco provides a command-line interface to post Discord messages to a channel
+using a familiar interface like sendmail.
+
+To use disco you must first define the webhook in any of three places:
+
+ 1. Populate the `DISCORD_WEBHOOK_URL` environment variable with your webhook URL
+ 2. Create a file at `~/.discord` with the webhook URL
+ 3. Create a file at `/etc/discord` with the webhook URL
+
+disco will look for the webhook URL in that order, allowing you to define a fallback webhook
+for the entire system, while letting users override that and use thier own.
+
+disco reads from stdin for the message and only supports text messages, it does not
+support sending attachments.
+*/
 package main
 
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
-	"strings"
 
 	"github.com/ecnepsnai/discord"
 )
@@ -20,7 +34,10 @@ func main() {
 
 	discord.WebhookURL = *u
 
-	discord.Say(getStdin())
+	if err := discord.Say(getStdin()); err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+		os.Exit(1)
+	}
 }
 
 func getStdin() string {
@@ -40,50 +57,31 @@ func getStdin() string {
 
 func loadConfig() (*string, error) {
 	// 1. Look for the environment variable DISCORD_WEBHOOK_URL
-	envMap := getEnvMap()
-	if url, ok := envMap["DISCORD_WEBHOOK_URL"]; ok {
+	if url := os.Getenv("DISCORD_WEBHOOK_URL"); url != "" {
 		return &url, nil
 	}
 
-	// 2. Try to read .discord
-	if webhookURL, _ := readConfigFile(path.Join(envMap["HOME"], ".discord")); webhookURL != nil {
+	// 2. Try to read ~/.discord
+	if webhookURL, _ := readConfigFile(path.Join(os.Getenv("HOME"), ".discord")); webhookURL != nil {
 		return webhookURL, nil
 	}
 
 	// 3. Try to read /etc/discord
-	return readConfigFile(path.Join("etc", "discord"))
-}
-
-func getEnvMap() map[string]string {
-	m := map[string]string{}
-
-	for _, s := range os.Environ() {
-		k, v := kvSplit(s)
-		m[k] = v
-	}
-
-	return m
-}
-
-func kvSplit(in string) (key string, value string) {
-	components := strings.SplitN(in, "=", 2)
-	key = components[0]
-	value = components[1]
-	return
+	return readConfigFile(path.Join("/", "etc", "discord"))
 }
 
 func readConfigFile(filePath string) (*string, error) {
-	f, err := os.OpenFile(filePath, os.O_RDONLY, 0644)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	data, err := ioutil.ReadAll(f)
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
 	}
 
 	webhookURL := string(data)
+
+	// Trim newline
+	if webhookURL[len(webhookURL)-1] == '\n' {
+		webhookURL = webhookURL[0 : len(webhookURL)-1]
+	}
+
 	return &webhookURL, nil
 }
