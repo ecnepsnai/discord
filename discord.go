@@ -2,6 +2,10 @@
 // To get started: Create a Webhook on the server, noting down the webhook URL.
 // Then, in your application set the webhook URL variable and then you can use `Say`
 // for a simple text message, or `Post` for a more complex message.
+//
+// Deprecated: github.com/ecnepsnai/discord is deprecated and replaced by git.ecn.io/ian/discord. All users should migrate to
+// git.ecn.io/ian/discord for continued updates. Tag v1.0.0 is drop-in compatible copy of the last release of
+// github.com/ecnepsnai/discord.
 package discord
 
 import (

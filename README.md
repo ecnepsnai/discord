@@ -1,3 +1,8 @@
+> [!CAUTION]
+> `github.com/ecnepsnai/discord` is deprecated and replaced by [git.ecn.io/ian/discord](https://git.ecn.io/ian/discord).
+> All users should migrate to `git.ecn.io/ian/discord` for continued updates. Tag v1.0.0 is drop-in compatible copy of the
+> last release of `github.com/ecnepsnai/discord`.
+
 # Discord
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/ecnepsnai/discord?style=flat-square)](https://goreportcard.com/report/github.com/ecnepsnai/discord)
